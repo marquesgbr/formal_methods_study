@@ -1,0 +1,36 @@
+/* M0_i
+ * Author: gabri
+ * Creation date: 03/09/2026
+ */
+
+IMPLEMENTATION M0_i
+REFINES M0_r
+
+VALUES
+    SS0 = e1;
+    C0 = 1
+CONCRETE_VARIABLES
+    xx1, xx2, yy
+INVARIANT
+    xx1 : INT &
+    xx2 : INT &
+    xx = xx1 + xx2
+INITIALISATION
+    xx1 := C0;
+    xx2 := 0;
+    yy := SS0
+    
+OPERATIONS
+    op1 = 
+    BEGIN
+        xx1 := C0;
+        xx2 := 0;
+        yy := e2
+    END;
+    
+    op2 = 
+    BEGIN
+        xx1 := C0;
+        xx2 := -C0
+    END
+END

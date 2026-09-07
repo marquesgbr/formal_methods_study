@@ -1,0 +1,26 @@
+/* M0_r
+ * Author: gabri
+ * Creation date: 03/09/2026
+ */
+
+REFINEMENT M0_r
+REFINES M0
+        
+VARIABLES
+    xx, yy
+INITIALISATION
+    xx := C0;
+    yy := SS0
+    
+OPERATIONS
+    op1 = 
+    BEGIN
+        xx :: 0..3 ; yy := e2
+    END;
+    
+    op2 = 
+    BEGIN
+        xx := 0
+    END
+
+END
