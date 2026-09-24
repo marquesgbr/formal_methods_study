@@ -1,0 +1,8 @@
+IMPLEMENTATION Club_2_ctx_i
+REFINES Club_2_ctx
+VALUES
+    MAX_NAME = 10; 
+    NAME = 0..MAX_NAME; 
+    total = 10; 
+    capacity = 5
+END

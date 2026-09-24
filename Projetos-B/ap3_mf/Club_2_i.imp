@@ -1,0 +1,45 @@
+IMPLEMENTATION Club_2_i
+REFINES Club_2
+SEES Club_2_ctx
+CONCRETE_VARIABLES        
+    member_i, waiting_i
+
+INVARIANT
+    member_i : NAME --> BOOL 
+    & waiting_i : NAME --> BOOL
+    & member = dom(member_i |> {TRUE})
+    & waiting = dom(waiting_i |> {TRUE})
+
+INITIALISATION
+    member_i := NAME*{FALSE};
+    waiting_i := NAME*{FALSE}
+
+OPERATIONS
+  join(nn) =
+  BEGIN
+      member_i(nn) := TRUE; 
+      waiting_i(nn) := FALSE
+  END;
+
+  join_queue(nn) =
+  BEGIN
+      waiting_i(nn) := TRUE
+  END;
+
+  remove(nn) = 
+  BEGIN
+      member_i(nn) := FALSE
+  END;
+
+ans <-- query_membership(nn) =
+  BEGIN
+    VAR is_member IN
+        is_member := member_i(nn);
+        IF is_member = TRUE
+        THEN ans := yes
+        ELSE ans := no
+        END
+    END
+  END
+
+END
