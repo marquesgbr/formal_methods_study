@@ -7,9 +7,9 @@ MACHINE
 CONSTANTS
     right_frogs, left_frogs, rocks
 PROPERTIES
-    right_frogs : FIN(NATURAL) & left_frogs : FIN(NATURAL) & rocks :         FIN(NATURAL) 
+    right_frogs : FIN(NATURAL) & left_frogs : FIN(NATURAL) & rocks : FIN(NATURAL) 
     & card(right_frogs)=3 & card(left_frogs)=3 & card(rocks)=7
-    & rocks = 1..7
+    & rocks = 1..7 & left_frogs = 1..3 & right_frogs = 4..6
 VARIABLES
     puddle
 INVARIANT
