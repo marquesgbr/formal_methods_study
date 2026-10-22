@@ -1,0 +1,96 @@
+/* exp_eval_i
+ * Author: gabriel
+ * Creation date: 22/10/2026
+ */
+
+IMPLEMENTATION exp_eval_i
+REFINES exp_eval
+
+CONCRETE_CONSTANTS
+    MAX_CAP
+PROPERTIES
+    MAX_CAP : NAT &
+    MAX_CAP = 1000000000
+CONCRETE_VARIABLES
+    stack_arr, sp
+INVARIANT
+    sp : 0..MAX_CAP &
+    stack_arr : 1..MAX_CAP -> FLOAT &
+    sp = size(stack) &
+    // Link invariant
+    !! index . (index : 1..sp => stack(index) = stack_arr(index)
+INITIALISATION
+    sp := 0;
+    VAR ii IN
+        ii := 0;
+        WHILE ii <= MAX_CAP DO
+            stack_arr(ii) := 0.0;
+            ii := ii + 1;
+        INVARIANT
+            stack_arr : 1..MAX_CAP -> FLOAT &
+            sp : 0..MAX_CAP &
+            sp : size(stack) &
+            !!ii . (ii : 1..sp => stack(ii) = stack_arr(ii))
+        VARIANT
+            MAX_CAP + 1 - ii
+OPERATIONS
+    push(vv) =
+    IF
+        vv : REAL
+    THEN
+        stack := stack <- vv
+    END
+    ;
+
+    add =
+    IF size(stack)>=2
+    THEN
+        LET n1, n2 BE
+            n1 = last(stack) &
+            n2 = last(front(stack))
+        IN
+            stack := (front(front(stack))) <- (n1 + n2)
+        END
+    END;
+
+    
+    
+    sub =
+    PRE size(stack)>=2
+    THEN
+        LET n1, n2 BE
+            n1 = last(stack) &
+            n2 = last(front(stack))
+        IN
+            stack := (front(front(stack))) <- (n1 - n2)
+        END
+    END;
+
+    
+    mul =
+    PRE size(stack)>=2
+    THEN
+        LET n1, n2 BE
+            n1 = last(stack) &
+            n2 = last(front(stack))
+        IN
+            stack := (front(front(stack))) <- (n1 * n2)
+        END
+    END;
+
+    
+    div =
+    PRE size(stack)>=2 
+    THEN
+        LET n1, n2 BE
+            n1 = last(stack) &
+            n2 = last(front(stack))
+        IN
+            IF n2 /= 0.0
+            THEN
+                stack := (front(front(stack))) <- (n1 / n2)
+            END
+        END
+    END
+
+ END

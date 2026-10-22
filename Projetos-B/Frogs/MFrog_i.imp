@@ -1,0 +1,50 @@
+/* MFrog_i
+ * Author: gabri
+ * Creation date: 13/10/2026
+ */
+
+IMPLEMENTATION MFrog_i
+REFINES MFrog
+//SETS
+//    ENTITY = {empty, blue_frog, red_frog}
+VALUES
+    STONE = 1..7;
+    BLUE = {b1, b2, b3};
+    RED = {r1, r2, r3}
+CONCRETE_VARIABLES
+    board
+INVARIANT
+    // linking invariant: board <-> state
+    board: STONE --> FROG
+    & !ff . (ff : BLUE => board(state(ff)) = blue_frog)
+    & !ff . (ff : RED => board(state(ff)) = red_frog)
+    & !pp . (pp : STONE & pp /: ran(state) => board(pp) = empty)
+INITIALISATION
+     board :=  {1 |-> b1, 2 |-> b2, 3 |-> b3,
+                4 |-> empty,
+              5 |-> r1, 6 |-> r1, 7 |-> r1}
+
+OPERATIONS
+    move(frog, pos) =
+    VAR s_pos IN
+        IF frog : BLUE THEN
+            /* O sapo veio de pos-1 ou pos-2 */
+            IF pos - 1 : STONE & board(pos - 1) = blue_frog THEN
+                s_pos := pos - 1
+            ELSIF pos - 2 : STONE & board(pos - 2) = blue_frog THEN
+                s_pos := pos - 2
+            END ;
+            board(s_pos) := empty ;
+            board(pos) := blue_frog
+        ELSIF frog : RED THEN 
+            /* Para o sapo vermelho, veio de pos+1 ou pos+2 */
+            IF pos + 1 : STONE & board(pos + 1) = red_frog THEN
+                s_pos := pos + 1
+            ELSIF pos + 2 : STONE & board(pos + 2) = red_frog THEN
+                s_pos := pos + 2
+            END ;
+            board(s_pos) := empty ;
+            board(pos) := red_frog
+        END
+    END
+END

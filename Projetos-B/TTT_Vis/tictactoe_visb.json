@@ -1,0 +1,207 @@
+{
+  "svg": "tictactoe_grid.svg",
+  "comment": "version which uses new svg object creation",
+  "definitions": [
+    { "name":"x_offset",
+      "value" : "4"
+    },
+    { "name":"center",
+      "value" : "%i.(i:INTEGER|5+10*(i-1))"
+    },
+    { "name":"vert_line_a",
+      "value":"%(i,j).(i:INTEGER & j:INTEGER | TO_STRING(center(i)+x_offset) ^ \" \" ^ TO_STRING(center(j)-x_offset)  ^ \" \" ^ TO_STRING(center(i)-x_offset) ^ \" \" ^ TO_STRING(center(j)+x_offset))"
+    },
+    { "name":"vert_line_b",
+      "value":"%(i,j).(i:INTEGER & j:INTEGER | TO_STRING(center(i)+x_offset) ^ \" \" ^ TO_STRING(center(j)+x_offset)  ^ \" \" ^ TO_STRING(center(i)-x_offset) ^ \" \" ^ TO_STRING(center(j)-x_offset))"
+    }
+  ],
+  "svg_objects":[
+    {
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":3}, 
+      "svg_class":"rect",
+      "id":"grid%0_%1",
+      "x":"10*(%0-1)",
+      "y":"10*(%1-1)",
+      "width":"10",
+      "height" : "10",
+      "stroke":"black",
+      "stroke-width":"0.25",
+      "fill":"white"
+    },
+    {
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":"3"}, 
+      "svg_class":"circle",
+      "id":"pieceO%0_%1",
+      "cx":"center(%0)",
+      "cy":"center(%1)",
+      "r":"4.5",
+      "stroke":"red",
+      "stroke-width":"0.5",
+      "style": "",
+      "fill":"white"
+    },
+    {
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":"3"}, 
+      "repeat": ["a","b"],
+      "svg_class":"polyline",
+      "id":"pieceX%0_%1_%2",
+      "points":"0 0 10 10",
+      "stroke":"blue",
+      "stroke-width":"0.5",
+      "style": "",
+      "fill":"white"
+    },
+    {
+      "svg_class":"rect",
+      "id":"winnerRect",
+      "x":"10*(5-1)",
+      "y":"10*(2-1)",
+      "width":"10",
+      "height" : "10",
+      "stroke":"black",
+      "stroke-width":"0.25",
+      "fill":"white"
+    },
+    {
+      "svg_class":"rect",
+      "id":"mctsRect",
+      "x":"10*(5-1)",
+      "y":"10.0*(2.0)+2.5",
+      "width":"10",
+      "height" : "5",
+      "stroke":"black",
+      "stroke-width":"0.25",
+      "fill":"lightgray"
+    },
+    {
+      "svg_class":"text",
+      "id":"winnerTxt",
+      "x":"40",
+      "y":"8",
+      "font-size":"3.0",
+      "font-family":"sans-serif",
+      "text":"Winner: "
+    },
+    {
+      "svg_class":"circle",
+      "id":"winnerO",
+      "cx":"center(5)",
+      "cy":"center(2)",
+      "r":"4.5",
+      "stroke":"red",
+      "stroke-width":"0.5",
+      "style": "",
+      "fill":"white"
+    },
+    {
+      "repeat": ["a","b"],
+      "svg_class":"polyline",
+      "id":"winnerX_%0",
+      "points":"0 0 10 10",
+      "stroke":"blue",
+      "stroke-width":"0.5",
+      "style": "",
+      "fill":"white"
+    },
+    {
+      "svg_class":"text",
+      "id":"mctsRectTxt",
+      "x":"41.6",
+      "y":"25.9",
+      "font-size":"2.5",
+      "font-family":"sans-serif",
+      "text":"MCTS"
+    }
+    ],
+  "items": [
+    { 
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":3}, 
+      "id":"pieceO%0_%1",
+      "attr": "visibility",
+      "value": "IF board(%0)(%1) = \"O\" THEN \"visible\" ELSE \"hidden\" END"
+    },
+    { 
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":3}, 
+      "repeat": ["a","b"],
+      "id":"pieceX%0_%1_%2",
+      "attr": "visibility",
+      "value": "IF board(%0)(%1) = \"X\" THEN \"visible\" ELSE \"hidden\" END"
+    },
+    { 
+      "id":"winnerO",
+      "attr": "visibility",
+      "value": "IF Won(\"O\") THEN \"visible\" ELSE \"hidden\" END"
+    },
+    { 
+      "repeat": ["a","b"],
+      "id":"winnerX_%0",
+      "attr": "visibility",
+      "value": "IF Won(\"X\") THEN \"visible\" ELSE \"hidden\" END"
+    },
+    { 
+      "id":"winnerTxt",
+      "attr": "text",
+      "value": "IF ran(union(ran(board)))={\"O\",\"X\"} & not(Won(\"X\")) & not(Won(\"O\")) THEN \"Draw !\" ELSE \"Winner:\" END"
+    },
+    { 
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":3}, 
+      "repeat": ["a"],
+      "id":"pieceX%0_%1_%2",
+      "attr": "points",
+      "value": "vert_line_a(%0,%1)"
+    },
+    { 
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":3}, 
+      "repeat": ["b"],
+      "id":"pieceX%0_%1_%2",
+      "attr": "points",
+      "value": "vert_line_b(%0,%1)"
+    },
+    { 
+      "id":"winnerX_a",
+      "attr": "points",
+      "value": "vert_line_a(5,2)"
+    },
+    { 
+      "id":"winnerX_b",
+      "attr": "points",
+      "value": "vert_line_b(5,2)"
+    }
+    ],
+  "events":[ 
+    {
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":3}, 
+      "id":"grid%0_%1",
+      "optional": "true",
+      "event":"MoveX",
+      "predicates": [ "i=%0", "j=%1"],
+      "hovers": [{ "attr":"fill", "enter":"gray", "leave":"white"}]
+    },
+    {
+      "for":{"from":1,"to":"3"}, 
+      "for":{"from":1,"to":3}, 
+      "id":"grid%0_%1",
+      "optional": "true",
+      "event":"MoveO",
+      "predicates": [ "i=%0", "j=%1"]
+    },
+    { 
+      "id":"mctsRect",
+      "event": "MCTS_AUTO_PLAY",
+      "hovers": [{ "attr":"fill", "enter":"green", "leave":"lightgray"}]
+    },
+    { 
+      "id":"mctsRectTxt",
+      "event": "MCTS_AUTO_PLAY",
+      "hovers": [{ "id":"mctsRect", "attr":"fill", "enter":"green", "leave":"lightgray"}]
+    }
+    ]
+}

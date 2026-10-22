@@ -1,0 +1,29 @@
+{
+  "name": "tictactoe_v2",
+  "description": "",
+  "machines": [
+    {
+      "name": "tictactoe_v2",
+      "description": "",
+      "location": "tictactoe_v2.tla",
+      "lastUsedPreferenceName": "default",
+      "validationTasks": [],
+      "ltlPatterns": [],
+      "simulations": [],
+      "visBVisualisations": [
+        "tictactoe_visb.json"
+      ]
+    }
+  ],
+  "requirements": [],
+  "preferences": [],
+  "metadata": {
+    "fileType": "Project",
+    "formatVersion": 57,
+    "savedAt": "2026-10-06T15:28:53.892361800Z",
+    "creator": "User",
+    "proB2KernelVersion": "4.16.1",
+    "proBCliVersion": null,
+    "modelName": null
+  }
+}

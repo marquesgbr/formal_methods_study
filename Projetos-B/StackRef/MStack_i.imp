@@ -1,0 +1,48 @@
+/* MStack_i
+ * Author: 
+ * Creation date: 08/10/2026
+ */
+IMPLEMENTATION MStack_i
+REFINES MStack
+VALUES MAX_SIZE = 4
+CONCRETE_VARIABLES 
+    stack_size_i,
+    stack_data_i
+INVARIANT
+    stack_size_i : NAT
+    & size(stack_data) = stack_size_i
+    & stack_size_i <= MAX_SIZE
+    & stack_data_i : (0..MAX_SIZE) --> NAT
+    & stack_data = (1..stack_size_i) <| stack_data_i
+INITIALISATION
+    stack_data_i := (0..MAX_SIZE) * {0}
+    ; stack_size_i := 0
+OPERATIONS
+    stack_push(value) =
+    BEGIN
+       IF stack_size_i < MAX_SIZE THEN
+           stack_data_i(stack_size_i+1) := value
+           ; stack_size_i := stack_size_i+1
+       END    
+    END
+    ;
+    value <-- stack_top =
+    BEGIN
+       IF stack_size_i > 0 THEN
+           value := stack_data_i(stack_size_i)
+       END
+    END
+    ;
+    stack_pop =
+    BEGIN
+       IF stack_size_i > 0 THEN
+           stack_size_i := stack_size_i-1
+       END
+    END
+    ;
+    is_empty <-- stack_empty =
+    BEGIN
+        IF stack_size_i = 0 THEN is_empty := TRUE
+        ELSE is_empty := FALSE END
+    END
+END
