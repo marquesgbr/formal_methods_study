@@ -1,0 +1,81 @@
+1. 
+Essa foi bem complicada. Principalmente pq eu não tô mt habituado a usar SETS. Toda vez eu acho que precisa necessariamente usar PROPERTIES e CONSTANTS, sendo que não é bem assim, aí ficou tudo confuso. As vezes da só pra resolver com invariant msm pra deixar tudo com WD. Só que eu demoro mt pra perceber isso. Queria ter um jeito de perceber mais facilmente quando o invariant não é suficiente quando se usa SETS. O proprio uso de SETS em si antes era confuso pra mim, eu tive que fazer um paralelo com criação de tipos em linguagens OO, aí entendi mais facilmente como utilizar. O trade-off eu demorei um pouco pra formalizar a justificativa, mas não foi tão trabalhoso de escrever a condição da invariante pra checar se todo item no carrinho do cliente está em produtos.
+
+a)
+MACHINE
+    triagem_1
+SETS
+    PROD_ID;
+    CODIGO     
+VARIABLES
+    clientes, 
+    cod_barras,
+    carrinhos,
+    codigos,
+    produtos
+INVARIANT
+    clientes : FIN(NAT) &
+    produtos <: PROD_ID &
+    codigos <: CODIGO &
+    cod_barras : produtos >-> CODIGO &
+    carrinhos : clientes >+> seq(PROD_ID) &
+    !cc.(cc : dom(carrinhos) => (ran(carrinhos(cc)) <: produtos) )
+INITIALISATION
+    clientes := {} ||
+    codigos := {} ||
+    produtos := {} ||
+    cod_barras := {} ||
+    carrinhos := {}
+END
+b) Temos um trade-off que pode ser resumido em onde você escolhe alocar a complexidade da verificação de uma remoção. Pq temos um problema que não é eliminado por nenhuma modelagem: ao remover um produto do sistema, vc precisa ter certeza de que esse produto não está na lista de algum cliente. Só que fazendo isso usando seq(produtos), vc coloca isso na função que remove. Já usando seq(PROD_ID) vc precisa fazer isso na invariante, garantindo que para todo produto pertencente às listas de todos os clientes (uma espécie de conjunto união da imagem de carrinhos), existe um elemento correspondente no conjunto produtos. Por uma questão de organização, optei por utilizar a versão que usa PROD_ID.
+
+2.
+Esse foi mais fácil que o anterior. Mas ainda tive um pouco de dificuldade pra ter a sacada de tentar entender o que aconteceria com o preço. Mas assim que percebi, foi fácil escrever a condição.
+
+a) Não poderíamos atualizar o preço de um item que já existe, pois estaríamos exigindo que ele tivesse um nome diferente para atualizar o preço dele.
+b) ( (nome(id) = novo_nome)  or (novo_nome /: ran(nome))
+
+3.
+Esse eu tive bem menos dificuldade que as duas anteriores. Consegui imaginar a solucao em ~30s. Só precisei fazer uma checagem de sintaxe no predicado que remove o usuário. Mas foi bem rapido. Uma coisa que percebi, é que tenho o hábito de confundir o domínio de uma função com o tipo inteiro. Por exemplo nesse das permissoes, eu sem querer escrevi "salas(ss)" ao inves de "permissoes(ss)", aí isso da num erro, pq eu fico pensando no global ao invés do é delimitado pela função. Talvez deva ser por causa da tendência a ficar buscando condições de WD, mas não sei ao certo.
+
+permissoes := %ss.( ss : salas | permissoes(ss) - {uu})
+
+4.
+Essa tbm saiu lisa. O erro de tipo eu vi na hora que bati o olho e a expressao saiu quando eu consegui falar em voz alta a condicao matematica. Nao devo ter demorado 1min pra imaginar as respotas. Mas eu cometi um erro de sintaxe e usei "|" ao inves de "=>". Nao to tentando ficar muito proficiente na sintaxe pq a prova vai ser no atelier B, ent eu posso debuggar esse tipo de coisa na hora. To tentando deixar a logica afiada e so tentar lembrar quais operadores existem pra poder usar o manual de símbolos e o debug sem precisar ficar ocupando minha memoria com isso.
+
+a) Por que ran(pedidos) é uma relação (i.e. um conjunto de pares ordenados), e estamos tentando verificar se um elemento isolado, que não é um par ordenado, pertence a uma relação. Além do mais, mesmo que fosse um par ordenado, ainda precisaria ser do mesmo tipo de seq(itens), ou seja, um relação (que nesse caso tbm é função e injetora ainda por cima) de naturais para itens.
+b) !mm.( (mm : dom(pedidos)) => (ii /: ran(pedidos(mm))) )
+
+5.
+Essa tbm saiu bem facil. O erro deu pra ver na hora que eu olhei denovo pra a lista/sequencia com os itens do pedido e a correcao do predicado n teve nada de especial. So precisei consultar o manual pra lembrar a que sigma ele se referia. Nessa eu tinha esquecido de fechar o parentese mais externo da expressao.
+
+a) Pq ran(p) retorna os elementos de forma unica, como ID1 ta duplicado em "p", ele so acaba retornando {ID1, ID2}, ai ele faz a soma somente com 2 elementos ao inves de ser todos os 3 do pedido.
+b) SIGMA ii . ( ii : dom(p) | preco(p(ii)) )
+
+6.
+Essa eu tbm não achei nada difícil, eu lembrei na hora dessa peculiaridade da função max pq já estourou esse erro comigo quando tentei fazer max de algo que poderia ser vazio e eu fiquei algum tempo tentando. Lembrei na hora disso e já consegui apontar o erro. Tem outras funções semelhantes com esse comportamento, apesar de não lembrar de todas. Eu sei que min() tbm funciona assim.
+
+a) a funcao max() so consegue avaliar conjuntos nao vazios, se ran(views) por algum acaso retornar vazio, max nao consegue avaliar a expressao e poderia subir um erro. Mas no atelier B, isso gera uma PO pedindo pra mostrar que views nunca eh vazio. Basta colocar um if verificando se views é vazio, se for retorna vazio e se não for pode avaliar a expressão:
+
+IF views = {} THEN
+	mm := {}
+ELSE 
+	(expressão...)
+
+b) Sabendo que views é não vazio, basta pegar o size do junto retornado pela compreensão de conjuntos. Se tiver mais de um retorna vazio
+Ficaria:
+IF views = {} THEN
+	mm := {}
+ELSE 
+	tam := size(expressão...)
+	IF tam > 1 THEN
+		mm := {}
+	ELSE
+
+
+Também fiquei batendo cabeça pra tentar escrever isso aqui:
+
+mm := {ff | ff: dom(views) & (!gg . ( (gg : dom(views) & ff /= gg) => (views(ff) > views(gg) ) ) ) }
+
+Confesso que esse eu precisei de ajuda guiada. Mas eu terminei por escrever sozinho, só fui recebendo dicas até chegar na reposta final. Esse jeito é mais elegante que o meu de usar if's. Apesar de não saber se é necessário ou não. Já que no fim das contas eu preciso gerar código em C pra isso e usar os IFs é mais direto pra ajudar no refinamento. Fiz essa segunda solução como um exercício de prática de sintaxe.
+Esse jeito é elegante e resolve o problema em uma linha pq se views for vazio o teste inicial pra ver se ff é vazio já vai falhar e retornar vazio e não o problema de max avaliar um conjunto vazio. E daí a expressão restante só vai retornar alguma coisa diferente de vazio se ele encontrar um ff que seja estritamente maior que todos os outros elementos (representados por gg /= ff).  
